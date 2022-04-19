@@ -19,6 +19,25 @@ const { Confirm } = require("enquirer")
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY || ""
 
+const TARGET_NETWORK = process.env.NETWORK || 'iotexTestnet';
+
+const mnemonicPath = './generated/mnemonic.secret';
+function getMnemonic() {
+    try {
+        return fs.readFileSync(mnemonicPath).toString().trim();
+    } catch (e) {
+        // @ts-ignore
+        if (TARGET_NETWORK !== 'localhost') {
+            console.log('☢️ WARNING: No mnemonic file created for a deploy account. Try `yarn run generate` and then `yarn run account`.');
+        }
+    }
+    return '';
+};
+
+const MNEMONIC_MODE = true
+
+const ACCOUNTS = MNEMONIC_MODE ? { mnemonic: getMnemonic() } : [PRIVATE_KEY];
+
 const config: HardhatUserConfig = {
     namedAccounts: {
         deployer: {
@@ -31,13 +50,31 @@ const config: HardhatUserConfig = {
         },
         rinkeby: {
             url: "https://rinkeby.infura.io/v3/", // <---- YOUR INFURA ID! (or it won't work)
-            accounts: [PRIVATE_KEY],
+            accounts: ACCOUNTS,
         },
         mainnet: {
             url: "https://mainnet.infura.io/v3/",
-            accounts: [PRIVATE_KEY],
+            accounts: ACCOUNTS,
+        },
+        iotexMainnet: {
+            url: 'https://babel-api.mainnet.iotex.io',
+            accounts: ACCOUNTS,
+            saveDeployments: true,
+            timeout: 3 * 20000,
+            chainId: 4689,
+            gas: 8500000,
+            gasPrice: 1000000000000
+        },
+        iotexTestnet: {
+            url: 'https://babel-api.testnet.iotex.io',
+            accounts: ACCOUNTS,
+            chainId: 4690,
+            gas: 8500000,
+            saveDeployments: true,
+            gasPrice: 1000000000000
         },
     },
+
     etherscan: {
         apiKey: {
             rinkeby: process.env.ETHERSCAN_API_KEY,
@@ -101,3 +138,37 @@ task("deploy")
 
             ; (await prompt.run()) && (await runSuper(taskArgs))
     })
+
+
+task('generate', 'Create a mnemonic for builder deploys', async (_, { ethers }) => {
+    const Table = require('cli-table3');
+    const bip39 = require('bip39');
+    const hdkey = require('ethereumjs-wallet/hdkey');
+    const EthUtil = require('ethereumjs-util');
+
+    const mnemonic = bip39.generateMnemonic();
+    const seed = await bip39.mnemonicToSeed(mnemonic);
+    const hdwallet = hdkey.fromMasterSeed(seed);
+
+    const walletHdpath = "m/44'/60'/0'/0/";
+    const account_index = 0;
+
+    const fullPath = `${walletHdpath}${account_index}`;
+    const wallet = hdwallet.derivePath(fullPath).getWallet();
+    const privateKey = `0x${wallet._privKey.toString('hex')}`;
+    const address = `0x${EthUtil.privateToAddress(wallet._privKey).toString('hex')}`;
+    console.log(`🔐 Account Generated as ${address} and set as mnemonic in packages/hardhat`);
+    console.log("💬 Use 'yarn run account' to get more information about the deployment account.");
+
+    var table = new Table({
+        head: ['fullPath', 'address', 'privateKey', 'mnemonic'],
+    });
+
+    table.push([fullPath, address, privateKey, mnemonic]);
+
+    console.log(table.toString())
+
+
+    fs.writeFileSync(`./generated/${address}.secret`, mnemonic.toString());
+    fs.writeFileSync(mnemonicPath, mnemonic.toString());
+});
