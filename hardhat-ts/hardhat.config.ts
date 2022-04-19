@@ -22,6 +22,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY || ""
 const TARGET_NETWORK = process.env.NETWORK || 'iotexTestnet';
 
 const mnemonicPath = './generated/mnemonic.secret';
+
 function getMnemonic() {
     try {
         return fs.readFileSync(mnemonicPath).toString().trim();
@@ -34,7 +35,7 @@ function getMnemonic() {
     return '';
 };
 
-const MNEMONIC_MODE = true
+const MNEMONIC_MODE = false
 
 const ACCOUNTS = MNEMONIC_MODE ? { mnemonic: getMnemonic() } : [PRIVATE_KEY];
 
@@ -47,14 +48,6 @@ const config: HardhatUserConfig = {
     networks: {
         localhost: {
             url: "http://localhost:8545",
-        },
-        rinkeby: {
-            url: "https://rinkeby.infura.io/v3/", // <---- YOUR INFURA ID! (or it won't work)
-            accounts: ACCOUNTS,
-        },
-        mainnet: {
-            url: "https://mainnet.infura.io/v3/",
-            accounts: ACCOUNTS,
         },
         iotexMainnet: {
             url: 'https://babel-api.mainnet.iotex.io',
@@ -128,19 +121,19 @@ task("deploy")
     .setAction(async (taskArgs, hre, runSuper) => {
         const { network } = taskArgs
         console.log(`Deploying...`)
-
         const accounts = await hre.ethers.getSigners()
+        // console.log(accounts)
 
         const prompt = new Confirm({
             name: "question",
             message: `Confirm to deploy with ${accounts[0].address}`,
-        })
-
-            ; (await prompt.run()) && (await runSuper(taskArgs))
+        });
+        (await prompt.run()) && (await runSuper(taskArgs))
     })
 
 
 task('generate', 'Create a mnemonic for builder deploys', async (_, { ethers }) => {
+    const glob = require('glob')
     const Table = require('cli-table3');
     const bip39 = require('bip39');
     const hdkey = require('ethereumjs-wallet/hdkey');
@@ -165,10 +158,10 @@ task('generate', 'Create a mnemonic for builder deploys', async (_, { ethers }) 
     });
 
     table.push([fullPath, address, privateKey, mnemonic]);
-
-    console.log(table.toString())
-
-
-    fs.writeFileSync(`./generated/${address}.secret`, mnemonic.toString());
     fs.writeFileSync(mnemonicPath, mnemonic.toString());
+
+    const files = glob.sync('./generated/*.secret');
+    fs.writeFileSync(`./generated/${files.length}_${address}.secret`, mnemonic.toString());
+
+    console.log(table.toString());
 });

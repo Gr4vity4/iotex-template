@@ -1,3 +1,4 @@
 web/yarn.lock
 web/libs/simple-wallet-provider-main/yarn.lock
 hardhat-ts/yarn.lock
+yarn.lock

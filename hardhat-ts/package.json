@@ -83,6 +83,7 @@
         "timeout": 10000000
     },
     "dependencies": {
-        "cli-table3": "^0.6.2"
+        "cli-table3": "^0.6.2",
+        "glob": "^8.0.1"
     }
 }
