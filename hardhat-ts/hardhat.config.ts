@@ -13,6 +13,7 @@ import "hardhat-gas-reporter"
 import "hardhat-watcher"
 import { HardhatUserConfig, task } from "hardhat/config"
 import "solidity-coverage"
+import { HttpNetworkUserConfig } from "hardhat/types"
 const fs = require("fs")
 
 const { Confirm } = require("enquirer")
@@ -35,7 +36,7 @@ function getMnemonic() {
     return '';
 };
 
-const MNEMONIC_MODE = false
+const MNEMONIC_MODE = true
 
 const ACCOUNTS = MNEMONIC_MODE ? { mnemonic: getMnemonic() } : [PRIVATE_KEY];
 
@@ -131,13 +132,13 @@ task("deploy")
         (await prompt.run()) && (await runSuper(taskArgs))
     })
 
+const Table = require('cli-table3');
+const hdkey = require('ethereumjs-wallet/hdkey');
+const bip39 = require('bip39');
+const EthUtil = require('ethereumjs-util');
+const glob = require('glob')
 
 task('generate', 'Create a mnemonic for builder deploys', async (_, { ethers }) => {
-    const glob = require('glob')
-    const Table = require('cli-table3');
-    const bip39 = require('bip39');
-    const hdkey = require('ethereumjs-wallet/hdkey');
-    const EthUtil = require('ethereumjs-util');
 
     const mnemonic = bip39.generateMnemonic();
     const seed = await bip39.mnemonicToSeed(mnemonic);
@@ -164,4 +165,45 @@ task('generate', 'Create a mnemonic for builder deploys', async (_, { ethers }) 
     fs.writeFileSync(`./generated/${files.length}_${address}.secret`, mnemonic.toString());
 
     console.log(table.toString());
+});
+
+
+task('balance', 'Get balance informations for the deployment account.', async (_, { ethers }) => {
+    const mnemonic = fs.readFileSync(mnemonicPath).toString().trim();
+    const seed = await bip39.mnemonicToSeed(mnemonic);
+    const hdwallet = hdkey.fromMasterSeed(seed);
+    const wallet_hdpath = "m/44'/60'/0'/0/";
+    const account_index = 0;
+    const fullPath = wallet_hdpath + account_index;
+    const wallet = hdwallet.derivePath(fullPath).getWallet();
+    const privateKey = `0x${wallet._privKey.toString('hex')}`;
+
+    const address = `0x${EthUtil.privateToAddress(wallet._privKey).toString('hex')}`;
+
+    const qrcode = require('qrcode-terminal');
+    qrcode.generate(address);
+
+    var table = new Table({
+        head: ['fullPath', 'address', 'privateKey', 'mnemonic'],
+    });
+
+    table.push([fullPath, address, '-', '-']);
+    console.log(table.toString())
+    fs.writeFileSync(mnemonicPath, mnemonic.toString());
+
+    // console.log(`‍📬 Deployer Account is ${address}`);
+    for (const n in config.networks) {
+        // console.log(config.networks[n], n)
+        try {
+            // const network = config.networks[n] as HttpNetworkUserConfig;
+            const { url } = config.networks[n] as HttpNetworkUserConfig;
+            const provider = new ethers.providers.JsonRpcProvider(url);
+            const balance = await provider.getBalance(address);
+            console.log(` -- ${n} --  -- -- 📡 `);
+            console.log(`   balance: ${ethers.utils.formatEther(balance)}`);
+            console.log(`   nonce: ${await provider.getTransactionCount(address)}`);
+        } catch (e) {
+            // console.log("ERROR");
+        }
+    }
 });

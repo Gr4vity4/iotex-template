@@ -2,18 +2,13 @@
 
 pragma solidity 0.8.9;
 
-contract Greeter {
-    string private greeting;
+import "erc721a/contracts/ERC721A.sol";
 
-    constructor(string memory _greeting) {
-        greeting = _greeting;
-    }
+contract Azuki is ERC721A {
+  constructor() ERC721A("Azuki", "AZUKI") {}
 
-    function greet() public view returns (string memory) {
-        return greeting;
-    }
-
-    function setGreeting(string memory _greeting) public {
-        greeting = _greeting;
-    }
+  function mint(uint256 quantity) external payable {
+    // _safeMint's second argument now takes in a quantity, not a tokenId.
+    _safeMint(msg.sender, quantity);
+  }
 }
