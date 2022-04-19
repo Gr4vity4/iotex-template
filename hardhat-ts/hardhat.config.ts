@@ -154,7 +154,7 @@ task('generate', 'Create a mnemonic for builder deploys', async (_, { ethers }) 
     console.log(`🔐 Account Generated as ${address} and set as mnemonic in packages/hardhat`);
     console.log("💬 Use 'yarn run account' to get more information about the deployment account.");
 
-    var table = new Table({
+    const table = new Table({
         head: ['fullPath', 'address', 'privateKey', 'mnemonic'],
     });
 
@@ -183,7 +183,7 @@ task('balance', 'Get balance informations for the deployment account.', async (_
     const qrcode = require('qrcode-terminal');
     qrcode.generate(address);
 
-    var table = new Table({
+    const table = new Table({
         head: ['fullPath', 'address', 'privateKey', 'mnemonic'],
     });
 
@@ -191,11 +191,8 @@ task('balance', 'Get balance informations for the deployment account.', async (_
     console.log(table.toString())
     fs.writeFileSync(mnemonicPath, mnemonic.toString());
 
-    // console.log(`‍📬 Deployer Account is ${address}`);
     for (const n in config.networks) {
-        // console.log(config.networks[n], n)
         try {
-            // const network = config.networks[n] as HttpNetworkUserConfig;
             const { url } = config.networks[n] as HttpNetworkUserConfig;
             const provider = new ethers.providers.JsonRpcProvider(url);
             const balance = await provider.getBalance(address);

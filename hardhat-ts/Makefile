@@ -11,7 +11,7 @@ setup:
 	hh run scripts/00-setup.js  --network $(network)
 
 deploy:
-	hh deploy --network $(network) --tags MyNFT
+	hh deploy --network $(network) --tags $(tags)
 	make typechain
 	yarn webconfig:$(network)
 	make setup
@@ -42,11 +42,10 @@ typechain:
 	hh typechain
 	cp -R typechain ../nft-web/src/generated
 
-abi:
-	cat deployments/${network}/MyNFT.json | jq .abi | jq
-	@cat deployments/${network}/MyNFT.json | jq .address
-	@cat deployments/${network}/MyNFT.json | jq .transactionHash
-
+# abi:
+# 	cat deployments/${network}/MyNFT.json | jq .abi | jq
+# 	@cat deployments/${network}/MyNFT.json | jq .address
+# 	@cat deployments/${network}/MyNFT.json | jq .transactionHash
 
 action:
 	# echo argument is $(foo)
