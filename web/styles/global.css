@@ -1,0 +1,71 @@
+@import './tailwind.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  background-color: #fff;
+  height: 100vh;
+  font-family: 'Inconsolata',monospace, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Inconsolata', monospace, sans-serif;
+}
+
+/* .material-icons,
+.material-icons-outlined {
+  font-family: 'Material Icons';
+}
+
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+  transition: opacity 200ms ease-in-out;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}
+
+button:disabled {
+  cursor: not-allowed !important;
+} */
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0;
+  /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+  /* Firefox */
+}
+
+/* FX */
+.full-width-section {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+}
+/* Override .react-tag-input__input on Select Assets */
+.react-tag-input__input {
+  color: #000 !important;
+}
