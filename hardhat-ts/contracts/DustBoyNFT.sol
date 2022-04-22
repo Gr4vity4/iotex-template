@@ -21,6 +21,7 @@ contract DustBoyNFT is ERC721Enumerable, IERC2981, ReentrancyGuard, Ownable {
         uint256 field1;
         uint256 field2;
         uint256 field3;
+        uint256 field4;
     }
 
     mapping(uint256 => Sensor) public sensors;
