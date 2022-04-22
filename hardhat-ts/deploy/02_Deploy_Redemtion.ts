@@ -7,11 +7,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     const { deploy } = deployments
     const { deployer } = await getNamedAccounts()
 
-    // const DustBoyNFTContract = await ethers.getContractFactory("DustBoyNFT");
-    // const DustBoyNFT = await DustBoyNFTContract.deploy();
-    // await DustBoyNFT.deployed();
-
-    const NAME = 'DustBoyNFT'
+    const NAME = 'Redemption'
     const args: any[] = []
     await deploy(NAME, {
         contract: NAME,
@@ -31,5 +27,5 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
 }
 export default func
-func.tags = ["DustBoyNFT"]
+func.tags = ["Redemption"]
 
