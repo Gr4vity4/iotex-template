@@ -18,6 +18,7 @@ const fs = require("fs")
 
 const { Confirm } = require("enquirer")
 
+const MNEMONIC_MODE = true
 const PRIVATE_KEY = process.env.PRIVATE_KEY || ""
 
 const TARGET_NETWORK = process.env.NETWORK || "iotexTestnet"
@@ -38,7 +39,6 @@ function getMnemonic() {
     return ""
 }
 
-const MNEMONIC_MODE = true
 
 const ACCOUNTS = MNEMONIC_MODE ? { mnemonic: getMnemonic() } : [PRIVATE_KEY]
 
@@ -147,7 +147,7 @@ task("deploy")
             name: "question",
             message: `Confirm to deploy with ${accounts[0].address}`,
         })
-        ;(await prompt.run()) && (await runSuper(taskArgs))
+            ; (await prompt.run()) && (await runSuper(taskArgs))
     })
 
 const Table = require("cli-table3")
