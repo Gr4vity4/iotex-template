@@ -1,0 +1,23 @@
+{
+  "name": "traveller",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf types",
+    "precompile": "yarn clean",
+    "prepare": "yarn clean && yarn generate:type",
+    "generate:type": "typechain --target=ethers-v5 'abis/*.json'"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ethers": "^5.6.9"
+  },
+  "devDependencies": {
+    "@typechain/ethers-v5": "^10.1.0",
+    "@types/node": "^18.0.0",
+    "rimraf": "^3.0.2",
+    "typechain": "^8.1.0"
+  }
+}
