@@ -9,18 +9,18 @@ async function main() {
   const deployedBlockNumber = 14446496
   const latestBlockNumber = await provider.getBlockNumber()
 
-const toBlock = latestBlockNumber
-console.log(`fromBlock: ${deployedBlockNumber}, toBlock: ${toBlock}`)
-    const allEvents = await provider.getLogs({
-        fromBlock: deployedBlockNumber,
-        toBlock: toBlock,
-        address: contract.address,
-    })
-    const transferEvents = await contract.queryFilter(contract.filters.Transfer(), deployedBlockNumber, toBlock)
+  const toBlock = latestBlockNumber
+  console.log(`fromBlock: ${deployedBlockNumber}, toBlock: ${toBlock}`)
+  const allEvents = await provider.getLogs({
+    fromBlock: deployedBlockNumber,
+    toBlock: toBlock,
+    address: contract.address,
+  })
+  const transferEvents = await contract.queryFilter(contract.filters.Transfer(), deployedBlockNumber, toBlock)
 
-    console.log(`totalEvents: ${allEvents.length}, transferEvents: ${transferEvents.length}`)
-    console.log('Minted', transferEvents.filter(e => e.args.from === '0x0000000000000000000000000000000000000000').length)
-    console.log('Transferered', transferEvents.filter(e => e.args.from !== '0x0000000000000000000000000000000000000000'))
+  console.log(`totalEvents: ${allEvents.length}, transferEvents: ${transferEvents.length}`)
+  console.log('Minted', transferEvents.filter(e => e.args.from === '0x0000000000000000000000000000000000000000').length)
+  console.log('Transferered', transferEvents.filter(e => e.args.from !== '0x0000000000000000000000000000000000000000'))
 }
 
 main()
