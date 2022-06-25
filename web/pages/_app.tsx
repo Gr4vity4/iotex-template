@@ -6,7 +6,7 @@ import Main from 'components/Main'
 import Root from 'components/Root'
 import { AppProps } from 'next/app'
 import 'styles/global.css'
-import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import { Chain, chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -52,11 +52,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     testnet: false,
   }
   const { chains, provider } = configureChains(
-    [iotex],
+    [chain.optimism, iotex],
     [
       jsonRpcProvider({
         rpc: (chain) => {
-          if (chain.id !== iotex.id) return null
           return { http: chain.rpcUrls.default }
         },
       }),
