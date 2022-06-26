@@ -83,7 +83,9 @@
         "timeout": 10000000
     },
     "dependencies": {
+        "@ethereumjs/tx": "^3.5.2",
         "cli-table3": "^0.6.2",
-        "glob": "^8.0.1"
+        "glob": "^8.0.1",
+        "web3": "1.7.4"
     }
 }

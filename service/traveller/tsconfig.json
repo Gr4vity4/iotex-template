@@ -96,6 +96,6 @@
   },
   "include": [
     "src/**/*",
-    "types/**/*"
-  ]
+    "types/**/**/*"
+, "../../hardhat-ts/scripts/w3.ts"  ]
 }

@@ -1,26 +1,126 @@
-import { JsonRpcProvider } from '@ethersproject/providers'
-import { ERC721, ERC721__factory } from '../types/ethers-contracts'
-import { providers } from './utils'
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { ERC721__factory, IERC165__factory } from '../types/ethers-contracts';
+import { networks } from './utils';
 
-async function main() {
-  const network = 1
-  const provider = new JsonRpcProvider({ url: providers[network] })
-  const contract: ERC721 = ERC721__factory.connect('0x035e362e5d1f8c41ec882b37500d4e8632381d41', provider)
-  const deployedBlockNumber = 14446496
-  const latestBlockNumber = await provider.getBlockNumber()
+const cliProgress = require('cli-progress');
+const isValidUTF8 = require('utf-8-validate');
 
-  const toBlock = latestBlockNumber
-  console.log(`fromBlock: ${deployedBlockNumber}, toBlock: ${toBlock}`)
-  const allEvents = await provider.getLogs({
-    fromBlock: deployedBlockNumber,
-    toBlock: toBlock,
-    address: contract.address,
-  })
-  const transferEvents = await contract.queryFilter(contract.filters.Transfer(), deployedBlockNumber, toBlock)
+const fs = require('fs');
+const winston = require('winston');
+const logger = winston.createLogger({
+  level: 'info',
+  transports: [
+    // new winston.transports.Console(),
+    new winston.transports.File({ filename: 'combined.log' })
+  ]
+});
 
-  console.log(`totalEvents: ${allEvents.length}, transferEvents: ${transferEvents.length}`)
-  console.log('Minted', transferEvents.filter(e => e.args.from === '0x0000000000000000000000000000000000000000').length)
-  console.log('Transferered', transferEvents.filter(e => e.args.from !== '0x0000000000000000000000000000000000000000'))
+class Engine {
+  private blockHeight: number = 0;
+  private provider: JsonRpcProvider;
+  private bar1: any;
+
+  constructor(networkId: number) {
+    console.log('network id', networkId)
+    console.log(networks[networkId])
+    this.provider = new JsonRpcProvider({ url: networks[networkId] })
+    // console.log(this.provider.connection)
+  }
+  public async catchUp() {
+    let from = this.blockHeight || 12656640; // TODO: read blockHeight from DB
+    const last = await this.provider.getBlockNumber()
+
+    // console.log("???")
+    // console.info(`catchUp start at: ${from} ${last}`);
+
+    from++;
+
+    // note: you have to install this dependency manually since it's not required by cli-progress
+    // const colors = require('ansi-colors');
+
+    // // create new progress bar
+    // const b1 = new cliProgress.SingleBar({
+    //     format: 'CLI Progress |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} Chunks || Speed: {speed}',
+    //     barCompleteChar: '\u2588',
+    //     barIncompleteChar: '\u2591',
+    //     hideCursor: true
+    // });
+
+
+    // // initialize the bar - defining payload token "speed" with the default value "N/A"
+    // b1.start(last, 146566400, {
+    //   speed: 1
+    // });
+    const multiBar = new cliProgress.MultiBar({
+      clearOnComplete: false,
+      fps: 60,
+      hideCursor: true
+    }, cliProgress.Presets.shades_classic);
+
+    this.bar1 = multiBar.create(last, from)
+
+    while (from < last) {
+      const diff = 0;
+      const to = Math.min(from + diff, last);
+      this.bar1.update(from);
+      await this.scanBlocks(from, to);
+      from = to + 1;
+    }
+
+  }
+  private async scanBlocks(fromBlock: number, toBlock: number) {
+    // console.log('scanBlocks', fromBlock, toBlock, 'diff=', toBlock - fromBlock);
+    // console.log('result', await this.provider.getBlockWithTransactions(fromBlock))
+    // console.log('resugetBlocklt', await this.provider.getBlock(fromBlock))
+    const txs = await this.provider.getBlockWithTransactions(fromBlock)
+    for (const tx of txs.transactions) {
+      const txAny: any = tx;
+
+      // if (tx.type == 0) {
+      //   // console.log(tx.data.length)
+      //   // if (tx.data.length > 2 && tx.value.gt(0) && tx.to == '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045') {
+      //   if (tx.data.length >2 && tx.value.gt(0) && isValidUTF8(Buffer.from(tx.data.slice(2), 'hex'))) {
+      //     const str = Buffer.from(tx.data.slice(2), 'hex').toString('utf8');
+      //     if (str.length > 1)
+      //       console.log(`${fromBlock}, valid:`, str);
+      //     // console.log(`block ${this.scanBlocks}`, Buffer.from(tx.data.slice(2), 'hex').toString())
+      //     // console.log(tx)
+      //     // console.log(tx.data)
+      //   }
+      // }
+      // continue
+
+
+      if (txAny.creates) {
+        const contract = IERC165__factory.connect(txAny.creates, this.provider)
+        const ERC1155Interface = "0xd9b67a26"
+        const ERC721Interface = "0x80ac58cd"
+        const ERC721Enumerable = "0x780e9d63"
+
+        try {
+          if (await contract.supportsInterface(ERC721Interface)) {
+            const isErc721 = await ERC721__factory.connect(txAny.creates, this.provider)
+            // logger.info(`block: ${fromBlock}`)
+            const str = `> block: ${fromBlock}, ${txAny.creates} is ERC721, ${await contract.supportsInterface(ERC721Enumerable) && 'ERC721Enumerable' || ''}`
+            logger.info(str)
+          }
+          else if (await contract.supportsInterface(ERC1155Interface)) {
+            const str = `> block: ${fromBlock}, ${txAny.creates} is ERC1155`
+            logger.info(str)
+          }
+          else {
+            // console.log('>', txAny.creates, 'isUnknown')
+          }
+        }
+        catch (e) {
+          // console.log(e)
+        }
+      }
+    }
+    // console.log(`block: ${fromBlock} tx count: ${txs.transactions.length}`)
+  }
 }
 
-main()
+
+const e = new Engine(1);
+e.catchUp();
