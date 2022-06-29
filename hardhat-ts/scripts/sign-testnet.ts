@@ -28,7 +28,6 @@ async function main() {
     // )
 
     // const signedTx = tx.sign(privateKey)
-
     // const serializedTx = signedTx.serialize()
     // console.log("0x" + serializedTx.toString("hex"))
 
@@ -70,13 +69,14 @@ async function main() {
     let transaction = {
         to: "0xf98c0dd5d0ce940718037ca0a3ac61cebd447984",
         // gasLimit: 81000,
-        from: "0x54123b2309D456261410e51C10732033Ec885c21",
+        from: "0x1F2db4Cd949C8D24a210570733706e4B9AFf9Cdc",
         nonce: newNonce,
         type: 0,
         chainId: 4690,
-        gasPrice: "0xe8d4a51000",
-        gasLimit: "0x013c68",
-        data: "0xa4136862000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000036161610000000000000000000000000000000000000000000000000000000000",
+        gasPrice: 1000000000000,
+        // gasLimit: "0x013c68",
+        gasLimit: 1000000,
+        data: "0x6edb23df000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003",
         // data: "0x68656c6c6f20776f726c6421",
     }
 
@@ -85,11 +85,8 @@ async function main() {
     // const out = await hre.ethers.provider.sendTransaction(transaction)
     // console.log(out)
     console.log(rawTransaction)
-    const signedTx = await web3.eth.accounts.signTransaction(
-        transaction,
-        "",
-        // "",
-    )
+    // const signedTx = await web3.eth.accounts.signTransaction(transaction, privatekey)
+    // console.log(signedTx)
     // const out = await hre.ethers.provider.sendTransaction(rawTransaction)
     // const out = await web3.eth.sendSignedTransaction(rawTransaction).then(console.log)
     // const out = await web3.eth.sendSignedTransaction(signedTx.rawTransaction).then(console.log)

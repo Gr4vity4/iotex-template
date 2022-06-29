@@ -21,22 +21,36 @@ class Engine {
   private bar1: any;
 
   constructor(networkId: number) {
-    console.log('network id', networkId)
-    console.log(networks[networkId])
     this.provider = new JsonRpcProvider({ url: networks[networkId] })
     // console.log(this.provider.connection)
   }
   public async catchUp() {
-    let from = this.blockHeight || 15024260; // TODO: read blockHeight from DB
+    let from = this.blockHeight || 12656640; // TODO: read blockHeight from DB
     const last = await this.provider.getBlockNumber()
 
+    // console.log("???")
+    // console.info(`catchUp start at: ${from} ${last}`);
 
     from++;
 
+    // note: you have to install this dependency manually since it's not required by cli-progress
+    // const colors = require('ansi-colors');
 
+    // // create new progress bar
+    // const b1 = new cliProgress.SingleBar({
+    //     format: 'CLI Progress |' + colors.cyan('{bar}') + '| {percentage}% || {value}/{total} Chunks || Speed: {speed}',
+    //     barCompleteChar: '\u2588',
+    //     barIncompleteChar: '\u2591',
+    //     hideCursor: true
+    // });
+
+
+    // // initialize the bar - defining payload token "speed" with the default value "N/A"
+    // b1.start(last, 146566400, {
+    //   speed: 1
+    // });
     const multiBar = new cliProgress.MultiBar({
       clearOnComplete: false,
-      fps: 60,
       hideCursor: true
     }, cliProgress.Presets.shades_classic);
 
@@ -105,5 +119,5 @@ class Engine {
 }
 
 
-const e = new Engine(4690);
+const e = new Engine(1);
 e.catchUp();
