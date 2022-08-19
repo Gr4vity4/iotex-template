@@ -79,11 +79,9 @@ class Engine {
         const ERC1155Interface = "0xd9b67a26"
         const ERC721Interface = "0x80ac58cd"
         const ERC721Enumerable = "0x780e9d63"
-
         try {
           if (await contract.supportsInterface(ERC721Interface)) {
             const isErc721 = await ERC721__factory.connect(txAny.creates, this.provider)
-            // logger.info(`block: ${fromBlock}`)
             const str = `> block: ${fromBlock}, ${txAny.creates} is ERC721, ${await contract.supportsInterface(ERC721Enumerable) && 'ERC721Enumerable' || ''}`
             logger.info(str)
           }
