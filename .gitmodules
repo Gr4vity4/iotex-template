@@ -1,0 +1,3 @@
+[submodule "iotex-proxy"]
+	path = iotex-proxy
+	url = git@github.com:nazt/iotex-proxy.git
