@@ -1,5 +1,6 @@
-import { connectorsForWallets, darkTheme, RainbowKitProvider, wallet } from '@rainbow-me/rainbowkit'
+import { connectorsForWallets, darkTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'
+import { metaMaskWallet } from '@rainbow-me/rainbowkit/wallets'
 import Footer from 'components/Footer'
 import Header from 'components/Header'
 import Main from 'components/Main'
@@ -65,7 +66,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const connectors = connectorsForWallets([
     {
       groupName: 'Recommended',
-      wallets: [wallet.metaMask({ chains })],
+      wallets: [metaMaskWallet({ chains })],
     },
   ])
 
