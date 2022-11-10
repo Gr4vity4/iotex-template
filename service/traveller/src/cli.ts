@@ -59,20 +59,6 @@ class Engine {
     for (const tx of txs.transactions) {
       const txAny: any = tx;
 
-      // if (tx.type == 0) {
-      //   // console.log(tx.data.length)
-      //   // if (tx.data.length > 2 && tx.value.gt(0) && tx.to == '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045') {
-      //   if (tx.data.length >2 && tx.value.gt(0) && isValidUTF8(Buffer.from(tx.data.slice(2), 'hex'))) {
-      //     const str = Buffer.from(tx.data.slice(2), 'hex').toString('utf8');
-      //     if (str.length > 1)
-      //       console.log(`${fromBlock}, valid:`, str);
-      //     // console.log(`block ${this.scanBlocks}`, Buffer.from(tx.data.slice(2), 'hex').toString())
-      //     // console.log(tx)
-      //     // console.log(tx.data)
-      //   }
-      // }
-      // continue
-
       if (txAny.creates) {
         const contract = IERC165__factory.connect(txAny.creates, this.provider);
         const ERC1155Interface = "0xd9b67a26";
