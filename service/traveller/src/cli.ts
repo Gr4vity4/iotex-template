@@ -52,9 +52,6 @@ class Engine {
     }
   }
   private async scanBlocks(fromBlock: number, toBlock: number) {
-    // console.log('scanBlocks', fromBlock, toBlock, 'diff=', toBlock - fromBlock);
-    // console.log('result', await this.provider.getBlockWithTransactions(fromBlock))
-    // console.log('resugetBlocklt', await this.provider.getBlock(fromBlock))
     const txs = await this.provider.getBlockWithTransactions(fromBlock);
     for (const tx of txs.transactions) {
       const txAny: any = tx;
