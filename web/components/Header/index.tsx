@@ -8,6 +8,7 @@ export default function Header() {
     return (
       <ConnectButton.Custom>
         {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
+          console.log(account)
           return (
             <div
               {...(!mounted && {
@@ -62,6 +63,7 @@ export default function Header() {
                       {chain.name}
                     </button>
 
+                            Hello ${account.address}!
                     <button onClick={openAccountModal} type="button">
                       {account.displayName}
                       {account.displayBalance ? ` (${account.displayBalance})` : ''}

@@ -1,6 +1,3 @@
-[submodule "iotex-proxy"]
-	path = iotex-proxy
-	url = git@github.com:nazt/iotex-proxy.git
 [submodule "esp32-jupiter"]
 	path = esp32-jupiter
 	url = git@github.com:nazt/esp32-jupiter.git

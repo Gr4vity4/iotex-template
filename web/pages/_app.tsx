@@ -53,7 +53,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     testnet: false,
   }
   const { chains, provider } = configureChains(
-    [chain.optimism, iotex],
+    [chain.optimism, chain.goerli, iotex],
     [
       jsonRpcProvider({
         rpc: (chain) => {
