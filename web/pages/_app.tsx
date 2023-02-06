@@ -7,7 +7,8 @@ import Main from 'components/Main'
 import Root from 'components/Root'
 import { AppProps } from 'next/app'
 import 'styles/global.css'
-import { Chain, chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import { bsc, goerli, optimism } from 'wagmi/chains'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -44,7 +45,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     },
 
     rpcUrls: {
-      default: 'https://rpc.ankr.com/iotex',
+      default: { http: ['https://rpc.ankr.com/iotex'] },
+      public: { http: ['https://rpc.ankr.com/iotex'] },
     },
 
     blockExplorers: {
@@ -53,11 +55,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     testnet: false,
   }
   const { chains, provider } = configureChains(
-    [chain.optimism, chain.goerli, iotex],
+    [optimism, goerli, bsc, iotex],
     [
       jsonRpcProvider({
         rpc: (chain) => {
-          return { http: chain.rpcUrls.default }
+          return { http: chain.rpcUrls.default.http[0] }
         },
       }),
     ]
