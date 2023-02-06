@@ -1,6 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import Navigation from 'components/Navigation'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 export default function Header() {
   const { asPath } = useRouter()
@@ -82,9 +81,8 @@ export default function Header() {
     <div>
       <header className="relative flex justify-between w-full px-10 py-6 border-b">
         <div className="flex items-center gap-4 space-x-0 md:space-x-10">
-          <Link href="/">
+          {/* <Link href="/"> </Link> */}
             <a className="text-2xl">Fermented Blockchain</a>
-          </Link>
         </div>
         <Navigation />
         {/* <WalletConnector /> */}

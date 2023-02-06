@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 // import { showMenuState } from 'states'
@@ -65,11 +64,10 @@ export default function Sidebar() {
         <ul id="ul-sidebar-nav" className="pt-2 pl-6 list-none md:space-x-8 lg:space-x-12 md:flex md:pt-0">
           {menuItems.map((menuItem) => (
             <li key={menuItem.text} className="py-4 text-2xl font-bold md:py-0 md:text-base md:font-normal">
-              <Link href={menuItem.path}>
+              {/* <Link href={menuItem.path}> </Link> */}
                 <a className={`${isMenuActived(menuItem.path) ? '' : 'text-black-500'} hover:`} onClick={closeMenu}>
                   {menuItem.text}
                 </a>
-              </Link>
             </li>
           ))}
         </ul>
