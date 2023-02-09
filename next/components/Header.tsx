@@ -18,7 +18,6 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useRecoilState } from 'recoil'
 import { AccountType } from '@/types'
 import { accountState } from '@/states/index'
-import SubHeader from '@/components/SubHeader'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 

@@ -74,7 +74,7 @@ export default function Home() {
                   <Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'end', height: 55 }}>
                       <Group spacing={5} sx={{ backgroundColor: '#000' }}>
-                        <Button color="dark" onClick={() => handlers.current.decrement()}>
+                        <Button color="dark" onClick={() => handlers?.current?.decrement()}>
                           <Text size="xl" weight={500}>
                             -
                           </Text>
@@ -83,7 +83,7 @@ export default function Home() {
                         <NumberInput
                           hideControls
                           value={value}
-                          onChange={(val) => setValue(val)}
+                          onChange={(val: number) => setValue(val)}
                           handlersRef={handlers}
                           max={10}
                           min={0}
@@ -101,7 +101,7 @@ export default function Home() {
                           }}
                         />
 
-                        <Button color="dark" onClick={() => handlers.current.increment()}>
+                        <Button color="dark" onClick={() => handlers?.current?.increment()}>
                           <Text size="xl" weight={500}>
                             +
                           </Text>
