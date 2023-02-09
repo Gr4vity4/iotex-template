@@ -13,6 +13,7 @@ import {
   Button,
   Paper,
   Image,
+  MediaQuery,
 } from '@mantine/core'
 import { useState, useRef } from 'react'
 
@@ -36,11 +37,20 @@ export default function Home() {
             cols={2}
             spacing="xl"
             breakpoints={[
-              { maxWidth: 'md', cols: 3, spacing: 'md' },
-              { maxWidth: 'sm', cols: 2, spacing: 'sm' },
+              { maxWidth: 'md', cols: 2, spacing: 'md' },
+              { maxWidth: 'sm', cols: 1, spacing: 'sm' },
               { maxWidth: 'xs', cols: 1, spacing: 'sm' },
             ]}
           >
+            <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+              <Box>
+                <Image
+                  radius="md"
+                  src="https://zora-prod.mypinata.cloud/ipfs/bafybeih3m2dnrqilcfl5nyetrjqkzvd3pv3qwvotw6xv2ot5tmujq6rkdi"
+                  alt="NFT"
+                />
+              </Box>
+            </MediaQuery>
             <Box>
               <SimpleGrid cols={1} spacing="lg">
                 <Text weight="bold" size="xl">
@@ -125,13 +135,15 @@ export default function Home() {
                 </Paper>
               </SimpleGrid>
             </Box>
-            <Box>
-              <Image
-                radius="md"
-                src="https://zora-prod.mypinata.cloud/ipfs/bafybeih3m2dnrqilcfl5nyetrjqkzvd3pv3qwvotw6xv2ot5tmujq6rkdi"
-                alt="NFT"
-              />
-            </Box>
+            <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
+              <Box>
+                <Image
+                  radius="md"
+                  src="https://zora-prod.mypinata.cloud/ipfs/bafybeih3m2dnrqilcfl5nyetrjqkzvd3pv3qwvotw6xv2ot5tmujq6rkdi"
+                  alt="NFT"
+                />
+              </Box>
+            </MediaQuery>
           </SimpleGrid>
         </Container>
       </main>
