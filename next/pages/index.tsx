@@ -1,11 +1,27 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
+import {
+  Box,
+  Container,
+  SimpleGrid,
+  Text,
+  NumberInput,
+  Group,
+  ActionIcon,
+  NumberInputHandlers,
+  Button,
+  Paper,
+  Image,
+} from '@mantine/core'
+import { useState, useRef } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const [value, setValue] = useState(0)
+  const handlers = useRef<NumberInputHandlers>()
+
   return (
     <>
       <Head>
@@ -15,7 +31,109 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        
+        <Container>
+          <SimpleGrid
+            cols={2}
+            spacing="xl"
+            breakpoints={[
+              { maxWidth: 'md', cols: 3, spacing: 'md' },
+              { maxWidth: 'sm', cols: 2, spacing: 'sm' },
+              { maxWidth: 'xs', cols: 1, spacing: 'sm' },
+            ]}
+          >
+            <Box>
+              <SimpleGrid cols={1} spacing="lg">
+                <Text weight="bold" size="xl">
+                  Musical Machines
+                </Text>
+                <Text>
+                  Musical Machines is a digital artwork that questions the synthesis of sound itself. By deconstructing
+                  and reassembling the components of a synthesizer, the artist has created a work that is both a playful
+                  exploration of the machine&apos;s inner workings, and a comment on the role of technology in
+                  music-making. Unlimited open edition.
+                </Text>
+                <SimpleGrid cols={2} spacing="lg">
+                  <SimpleGrid cols={1} spacing={0}>
+                    <Text size="md" weight={500}>
+                      Price
+                    </Text>
+                    <Text size="xl" weight="bold">
+                      0.00 ETH
+                    </Text>
+                  </SimpleGrid>
+                  <Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'end', height: 55 }}>
+                      <Group spacing={5} sx={{ backgroundColor: '#000' }}>
+                        <Button color="dark" onClick={() => handlers.current.decrement()}>
+                          <Text size="xl" weight={500}>
+                            -
+                          </Text>
+                        </Button>
+
+                        <NumberInput
+                          hideControls
+                          value={value}
+                          onChange={(val) => setValue(val)}
+                          handlersRef={handlers}
+                          max={10}
+                          min={0}
+                          step={2}
+                          styles={{
+                            input: {
+                              width: 54,
+                              textAlign: 'center',
+                              backgroundColor: '#000',
+                              color: '#fff',
+                              fontSize: 18,
+                              fontWeight: 'bold',
+                              border: 'none',
+                            },
+                          }}
+                        />
+
+                        <Button color="dark" onClick={() => handlers.current.increment()}>
+                          <Text size="xl" weight={500}>
+                            +
+                          </Text>
+                        </Button>
+                      </Group>
+                    </Box>
+                  </Box>
+                </SimpleGrid>
+                <Button color="teal" fullWidth size="lg">
+                  <Text weight="bold">Mint</Text>
+                </Button>
+                <Paper shadow="md" p="md">
+                  <SimpleGrid cols={1} spacing="lg">
+                    <SimpleGrid cols={2} sx={{ width: '100%' }}>
+                      <Box>
+                        <Text>Number minted</Text>
+                      </Box>
+                      <Box sx={{ textAlign: 'right' }}>
+                        <Text>61 NFTs</Text>
+                      </Box>
+                    </SimpleGrid>
+                    <SimpleGrid cols={2} sx={{ width: '100%' }}>
+                      <Box>
+                        <Text>Public sale start</Text>
+                      </Box>
+                      <Box sx={{ textAlign: 'right' }}>
+                        <Text>25 Aug 2022, 9:43 am</Text>
+                      </Box>
+                    </SimpleGrid>
+                  </SimpleGrid>
+                </Paper>
+              </SimpleGrid>
+            </Box>
+            <Box>
+              <Image
+                radius="md"
+                src="https://zora-prod.mypinata.cloud/ipfs/bafybeih3m2dnrqilcfl5nyetrjqkzvd3pv3qwvotw6xv2ot5tmujq6rkdi"
+                alt="NFT"
+              />
+            </Box>
+          </SimpleGrid>
+        </Container>
       </main>
     </>
   )
