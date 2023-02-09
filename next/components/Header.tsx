@@ -205,7 +205,7 @@ export default function HeaderResponsive({ links }: HeaderResponsiveProps) {
 
   return (
     <Header height={HEADER_HEIGHT} mb={80} className={classes.root}>
-      <Container className={classes.header}>
+      <Container size="lg" className={classes.header}>
         <Text weight="bold" sx={{ cursor: 'pointer' }} onClick={() => router.push('/')}>
           Fermented Blockchain
         </Text>

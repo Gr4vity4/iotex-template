@@ -32,7 +32,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Container>
+        <Container size="lg">
           <SimpleGrid
             cols={2}
             spacing="xl"
