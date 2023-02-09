@@ -10,8 +10,17 @@ import {
   Button,
   Text,
   Autocomplete,
+  Box,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { useWeb3React } from '@web3-react/core'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useRecoilState } from 'recoil'
+import { AccountType } from '@/types'
+import { accountState } from '@/states/index'
+import SubHeader from '@/components/SubHeader'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 const HEADER_HEIGHT = 60
 
@@ -95,9 +104,11 @@ interface HeaderResponsiveProps {
 }
 
 export default function HeaderResponsive({ links }: HeaderResponsiveProps) {
+  const router = useRouter()
   const [opened, { toggle, close }] = useDisclosure(false)
   const [active, setActive] = useState(links[0].link)
   const { classes, cx } = useStyles()
+  const [accountData, setAccountData] = useRecoilState<AccountType>(accountState)
 
   const items = links.map((link) => (
     <a
@@ -114,10 +125,91 @@ export default function HeaderResponsive({ links }: HeaderResponsiveProps) {
     </a>
   ))
 
+  const CustomConnectButton = () => {
+    return (
+      <ConnectButton.Custom>
+        {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
+          if (account !== undefined && accountData.address === '') {
+            console.log(account)
+            setAccountData(account)
+          }
+
+          return (
+            <div
+              {...(!mounted && {
+                'aria-hidden': true,
+                style: {
+                  opacity: 0,
+                  pointerEvents: 'none',
+                  userSelect: 'none',
+                },
+              })}
+            >
+              {(() => {
+                if (!mounted || !account || !chain) {
+                  return (
+                    <Button color="dark" ml="md" onClick={openConnectModal}>
+                      Connect Wallet
+                    </Button>
+                  )
+                }
+
+                if (chain.unsupported) {
+                  return (
+                    <button onClick={openChainModal} type="button">
+                      Wrong network
+                    </button>
+                  )
+                }
+
+                return (
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Button color="dark" ml="md" onClick={openChainModal}>
+                      {chain.hasIcon && (
+                        <div
+                          style={{
+                            background: chain.iconBackground,
+                            width: 12,
+                            height: 12,
+                            borderRadius: 999,
+                            overflow: 'hidden',
+                            marginRight: 4,
+                          }}
+                        >
+                          {chain.iconUrl && (
+                            <img
+                              alt={chain.name ?? 'Chain icon'}
+                              src={chain.iconUrl}
+                              style={{ width: 12, height: 12 }}
+                            />
+                          )}
+                        </div>
+                      )}
+                      {chain.name}
+                    </Button>
+                    <Button color="dark" ml="md" onClick={openAccountModal}>
+                      {account.displayName}
+                      {account.displayBalance ? ` (${account.displayBalance})` : ''}
+                    </Button>
+                    {/* <Text color="gray" size="sm" pl="md">
+                      {account.address}
+                    </Text> */}
+                  </Box>
+                )
+              })()}
+            </div>
+          )
+        }}
+      </ConnectButton.Custom>
+    )
+  }
+
   return (
     <Header height={HEADER_HEIGHT} mb={120} className={classes.root}>
       <Container className={classes.header}>
-        <Text weight="bold">Fermented Blockchain</Text>
+        <Text weight="bold" sx={{ cursor: 'pointer' }} onClick={() => router.push('/')}>
+          Fermented Blockchain
+        </Text>
         <Group spacing={5} className={classes.links}>
           {items}
           <Autocomplete
@@ -125,9 +217,10 @@ export default function HeaderResponsive({ links }: HeaderResponsiveProps) {
             placeholder="Search"
             data={['React', 'Angular', 'Vue', 'Next.js', 'Riot.js', 'Svelte', 'Blitz.js']}
           />
-          <Button color="dark" ml="md">
+          {/* <Button color="dark" ml="md" onClick={handleConnectWallet}>
             Connect Wallet
-          </Button>
+          </Button> */}
+          <CustomConnectButton />
         </Group>
 
         <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
@@ -140,6 +233,9 @@ export default function HeaderResponsive({ links }: HeaderResponsiveProps) {
           )}
         </Transition>
       </Container>
+      {/* <Container py="md" px={0}>
+        <SubHeader />
+      </Container> */}
     </Header>
   )
 }
